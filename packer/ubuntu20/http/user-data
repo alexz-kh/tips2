@@ -1,0 +1,116 @@
+#cloud-config
+debug: True
+autoinstall:
+  version: 1
+  early-commands:
+  - systemctl stop ssh # otherwise packer tries to connect and exceed max attempts
+  locale: en_US
+  keyboard:
+    layout: en
+  ssh:
+    install-server: yes
+    allow-pw: yes
+    authorized-keys:
+    - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN1+7c/7TD+suN1nE8bMeGcTHA4n2rUNV3Cf2oKpBXIJ alexz"
+  identity:
+    hostname: ubuntu
+    # python -c "import crypt; print(crypt.crypt('r00tme'))"
+    password: "$6$cfewiKWcxSTBXyDJ$cKi8Hn/7LZdVOBTc62nnAwrXB./qTBuJ14GVHejOuRJ.J0sckWHKxBlaM6w8xSKRYS/vwvyvLzm4kldviAs/R/"
+    username: root
+  debconf-selections: |2
+    partman-basicfilesystems partman-basicfilesystems/no_swap boolean false
+    popularity-contest popularity-contest/participate boolean false
+    tasksel tasksel/first multiselect minimal, ssh-server, openssh-server
+  storage11:
+    layout:
+      name: direct
+  storage:
+  # copy paste whole logic just to pass labels(
+    config:
+    - grub_device: true
+      id: disk-vda
+      name: ''
+      path: /dev/vda
+      preserve: false
+      ptable: gpt
+      type: disk
+      wipe: superblock-recursive
+    - device: disk-vda
+      flag: bios_grub
+      id: partition-0
+      number: 1
+      preserve: false
+      size: 1048576
+      type: partition
+    - device: disk-vda
+      flag: ''
+      id: partition-1
+      number: 2
+      preserve: false
+      size: 5239734272
+      type: partition
+      wipe: superblock
+    - fstype: ext4
+      label: cloudimg-rootfs
+      id: format-0
+      preserve: false
+      type: format
+      volume: partition-1
+    - device: format-0
+      id: mount-0
+      options: "rw,noatime,nodiratime,lazytime,nobarrier,commit=240,data=ordered"
+      path: /
+      type: mount
+    version: 1
+  apt:
+    preserve_sources_list: true
+    primary:
+    - arches: [amd64]
+      uri: http://ubuntu.ip-connect.vn.ua/ubuntu
+  late-commands:
+    # that blocks auto-net-config. have no idea why it is even exist..
+    - curtin in-target --target=/target -- rm -rvf /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+    - sed -i 's/ENABLED=1/ENABLED=0/' /target/etc/default/motd-news
+    - sed -i 's|# en_US.UTF-8 UTF-8|en_US.UTF-8 UTF-8|' /target/etc/locale.gen
+    - ln -fs /dev/null /target/etc/systemd/system/connman.service
+    - ln -fs /dev/null /target/etc/systemd/system/display-manager.service
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.service
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.timer
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-quit-wait.service
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-start.service
+#    - ln -fs /dev/null /target/etc/systemd/system/systemd-resolved.service
+    - 'sed -i "s/dhcp4: true/&\n      dhcp-identifier: mac/" /target/etc/netplan/00-installer-config.yaml'
+
+##################################
+  # that part will be passed to target  /etc/cloud/cloud.cfg.d/99-installer.cfg
+  user-data:
+    disable_root: false
+    debug: True
+    ssh_pwauth: True
+    network:
+      version: 2
+      ethernets:
+        ens3:
+          dhcp4: true
+          nameservers:
+            addresses: [8.8.8.8]
+    chpasswd:
+      list: |
+        root:r00tme
+    #    cloud-user:r00tme
+      expire: False
+    output: {all: '| tee -a /var/log/cloud-init-output.log'}
+    runcmd:
+    #  - netplan apply
+    #  - sleep 10
+      - echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/packet.conf
+      - echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config.d/packet.conf
+      - service sshd restart
+    # have no idea, wtf it disabled
+      - systemctl unmask systemd-resolved.service
+      - systemctl start systemd-resolved.service
+    # speed up resolving, and not stuck on timeouts. One-shot changes
+    #  - echo '127.0.0.1 ubuntu' >> /etc/hosts
+    #  - echo 'options timeout:1 attempts:4' >> /etc/resolv.conf
+    #  - echo 'nameserver 172.18.208.44' >> /etc/resolvconf/resolv.conf.d/base
+    #  - resolvconf -u

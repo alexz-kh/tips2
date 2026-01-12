@@ -1,0 +1,5 @@
+https://cookingclouds.com/2012/07/17/ubuntudebian-preseeding-with-lvm/
+
+https://www.claudioborges.org/?p=733
+https://wikitech.wikimedia.org/wiki/PartMan
+https://help.ubuntu.com/lts/installation-guide/s390x/apbs04.html

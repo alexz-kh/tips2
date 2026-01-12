@@ -1,0 +1,46 @@
+password: &pwd "ceeNie6eiNgee3eiYoo6"
+username: &uname "kaas-bm-ci"
+clouds:
+  os_eu_bm:
+    auth:
+      auth_url: https://keystone.ic-eu.ssl.mirantis.net/v3
+      project_name: "kaas-bm-team"
+      user_domain_name: "default"
+      project_id: 4aa252dd638d4c7191a33404246ba460
+      password: *pwd
+      username: *uname
+      project_domain_name: default
+    region_name: "RegionOne"
+    interface: "public"
+    identity_api_version: 3
+  os_eu_storage:
+    auth:
+      auth_url: https://keystone.ic-eu.ssl.mirantis.net/v3
+      username: *uname
+      project_id: 45e055abe4ba465189589af14e9b0917
+      project_name: "storage-team"
+      user_domain_name: "default"
+      password: *pwd
+    region_name: "RegionOne"
+    interface: "public"
+    identity_api_version: 3
+  os_eu_scale:
+    auth:
+      auth_url: https://keystone.ic-eu.ssl.mirantis.net/v3
+      username: *uname
+      project_name: "scale-team"
+      user_domain_name: "default"
+      password: *pwd
+    region_name: "RegionOne"
+    interface: "public"
+    identity_api_version: 3
+  os_us_bm:
+    auth:
+      auth_url: https://ic-us.ssl.mirantis.net:5000/v3
+      username: *uname
+      project_name: "kaas-bm-team"
+      user_domain_name: "default"
+      password: *pwd
+    region_name: "RegionOne"
+    interface: "public"
+    identity_api_version: 3

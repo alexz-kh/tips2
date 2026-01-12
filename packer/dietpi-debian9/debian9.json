@@ -1,0 +1,79 @@
+{
+  "variables": {
+    "user": "pi",
+    "password": "pi",
+    "disk_size": "3000",
+    "image_name": "diet-debian9",
+    "bs_hostname": "diet",
+    "iso_cache" : "/home/alexz/work/imgs/isos/"
+
+  },
+  "provisioners": [
+    {
+      "environment_vars": [
+        "BS_HOSTNAME={{ user `bs_hostname` }}",
+        "PACKER_OFFLINE_BUILD=true"
+      ],
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }}",
+      "expect_disconnect": "true",
+      "scripts": [
+        "scripts/base.sh"
+      ]
+    }
+  ],
+  "builders": [
+    {
+      "type": "qemu",
+      "qemuargs": [
+        [
+          "-m",
+          "4096M"
+        ],
+        [
+          "-smp",
+          "4"
+        ]
+      ],
+      "vm_name": "{{ user `image_name` }}",
+      "output_directory": "images/{{ user `image_name`}}",
+      "accelerator": "kvm",
+      "disk_size": "{{ user `disk_size`}}",
+      "iso_url": "https://gensho.ftp.acc.umu.se/debian-cd/current/amd64/iso-cd/debian-9.4.0-amd64-netinst.iso",
+      "iso_target_path": "{{ user `iso_cache` }}/debian-9.4.0-amd64-netinst.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "73bd8aaaeb843745ec939f6ae3906e48",
+      "http_directory": "http",
+      "headless": true,
+      "ssh_username": "{{user `user`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "sync; sudo /sbin/shutdown -hP now",
+      "vnc_bind_address": "0.0.0.0",
+      "vnc_port_max": "5956",
+      "vnc_port_min": "5956",
+      "ssh_host_port_min": 2223,
+      "ssh_host_port_max": 2223,
+      "boot_wait": "2s",
+      "ssh_wait_timeout": "700s",
+      "boot_command": [
+        "<wait50ms>",
+        "<esc><wait>",
+        "install <wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+        "debian-installer=en_US.UTF-8 <wait>",
+        "auto <wait>",
+        "locale=en_US.UTF-8 <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=local <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "grub-installer/bootdev=/dev/vda <wait>",
+        "<enter><wait>"
+      ]
+    }
+  ]
+}

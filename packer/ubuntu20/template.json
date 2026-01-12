@@ -1,0 +1,77 @@
+{
+  "variables": {
+    "user": "root",
+    "password": "r00tme",
+    "disk_size": "5000M",
+    "images_cache": "{{ env `PACKER_IMAGES_CACHE` }}",
+    "do_api_token": "{{ env `DO_API_TOKEN` }}",
+    "image_name": "{{ env `IMAGE_NAME` }}"
+  },
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }};",
+      "expect_disconnect": "true",
+      "environment_vars": [
+        "UBUNTU_BASEURL={{ user `ubuntu_baseurl` }}"
+      ],
+      "override": {
+        "qemu": {
+          "scripts": [
+            "scripts/base.sh",
+            "scripts/motd.sh",
+            "scripts/network.sh",
+            "scripts/security.sh",
+            "scripts/cleanup.sh",
+            "scripts/info.sh",
+            "scripts/zerodisk.sh"
+          ]
+        }
+      }
+    },
+    {
+      "type": "file",
+      "source": "files/etc/",
+      "destination": "/etc"
+    }
+  ],
+  "builders": [
+    {
+      "type": "qemu",
+      "cpus" : 4,
+      "memory" : "2048",
+      "vm_name": "{{ user `image_name` }}-{{ isotime \"200601021504\"  }}.qcow2",
+      "output_directory": "images/{{ user `image_name` }}-qemu-{{ isotime \"200601021504\"  }}",
+      "disk_compression": true,
+      "disk_size": "{{ user `disk_size`}}",
+      "accelerator": "kvm",
+      "iso_checksum": "sha256:f8e3086f3cea0fb3fefb29937ab5ed9d19e767079633960ccb50e76153effc98",
+      "iso_url": "https://releases.ubuntu.com/20.04/ubuntu-20.04.3-live-server-amd64.iso",
+      "iso_target_path": "{{ user `images_cache` }}/ubuntu-20.04.3-live-server-amd64.iso",
+      "http_directory": "http",
+      "headless": true,
+      "ssh_username": "{{user `user`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "sync; sudo /sbin/shutdown -hP now",
+      "boot_wait": "2s",
+      "ssh_timeout": "20m",
+      "ssh_host_port_min": 7050,
+      "ssh_host_port_max": 7050,
+      "vnc_port_min": 5930,
+      "vnc_port_max": 5930,
+      "boot_keygroup_interval" : "1s",
+      "boot_command": [
+      "<enter><enter><f6><esc><wait> ",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "initrd=/casper/initrd kernel=/casper/vmlinuz ",
+      "edd=on nodmraid nomodeset acpi=off ",
+      "fsck.mode=skip autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+      "<enter>","<wait6m>"
+      ]
+    }
+  ]
+}

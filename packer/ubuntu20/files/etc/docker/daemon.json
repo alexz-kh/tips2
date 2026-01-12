@@ -1,0 +1,14 @@
+{
+  "bip": "192.168.91.1/24",
+  "tls" : false,
+  "exec-opts": [
+    "native.cgroupdriver=systemd"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "200m"
+  },
+  "storage-driver": "overlay2",
+ "max-concurrent-downloads": 10,
+ "max-download-attempts": 10
+}

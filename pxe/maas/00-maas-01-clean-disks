@@ -1,0 +1,36 @@
+#!/bin/bash
+set -xe
+
+echo "WARNING: processing full disk meta-cleanup!"
+
+dmsetup remove_all -f || true
+if [ -f /proc/mdstat ] ; then
+  grep blocks -B1 /proc/mdstat | grep ' : ' | cut -f1 -d' ' | xargs -I{} mdadm -R {}
+fi
+lvdisplay -a | awk '/LV Path.*/{print $3}' | xargs -I{} bash -c "echo \"Removing lv {}\"; lvremove --force {} || true"; sync
+vgdisplay | awk '/VG Name.*/{print $3}' | xargs -I{} bash -c "echo \"Removing vg {}\"; vgremove --force {} || true"; sync
+pvdisplay | awk '/PV Name.*/{print $3}' | xargs -I{} bash -c "echo \"Removing pv {}\"; pvremove --force {} || true"; sync
+
+mdadm --detail --scan | cut -d' ' -f2 | xargs -I{} bash -c "mdadm --stop {}"
+mdadm -Evs | grep -Eo 'devices=/\S+' | cut -d'=' -f2 | tr ',' '\n' | xargs -I{} mdadm --zero-superblock {}
+sync
+
+for _vol in $(ls /dev/mapper/* |grep -v control); do
+  dd if=/dev/zero of=${_vol} bs=1M count=1
+done; sync
+
+for _part in $(awk '/dm-/{print $4}' /proc/partitions); do
+  pvremove -ff ${_part}
+  dd if=/dev/zero of=${_part} bs=1M count=1
+done; sync
+
+for _dev in $(find /dev -name sd*) ; do
+  echo "Removing raid|lvm superblock ${_dev}"
+  mdadm --zero-superblock ${_dev} || true
+  pvremove -ffy ${_dev}* || true
+  dd if=/dev/zero of=${_dev} bs=1M count=1
+  sync
+done
+
+dmsetup remove_all -f || true
+sync

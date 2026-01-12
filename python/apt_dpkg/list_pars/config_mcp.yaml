@@ -1,0 +1,255 @@
+gerrit_host: "azvyagintsev@gerrit.mcp.mirantis.net"
+targets:
+  openstack:
+    prefixes:
+     - "packaging/sources/"
+#     - "salt-formulas/"
+    branches_all:
+      - "mcp/pike"
+#      - 'release/2019.2.0'
+    # mostly,system forks,which have only specs, w\o sources
+    project_blacklist_1:
+      - alembic
+      - angular.js
+      - asn1crypto
+      - bandit # maintained
+      - beautifulsoup4
+      - betamax
+      - case
+      - chardet
+      - d3
+      - debhelper
+      - defusedxml
+#      - designate-dashboard # ISSUE
+      - device-tree-compiler
+      - dh-autoreconf
+      - django-nose
+      - dnsmasq
+      - dnspython
+      - dpdk
+      - dulwich
+      - erlang
+      - erlang-sd-notify     # should be removed
+      - exabgp
+      - fluent-logger-python # ???
+      - fonts-font-awesome
+      - fonts-materialdesignicons-webfont
+      - fonts-roboto-fontface
+      - freezegun
+      - heat-agents              # ISSUE - should be removed?
+      - heat-translator          # ISSUE - should be removed?
+      - horizon-contrail-panels  # drivetrain ISSUE
+      - horizon-mirantis-theme   # drivetrain ISSUE
+      - horizon-overrides-plugin # drivetrain ISSUE
+      - ipxe-qemu-256k-compat
+      - ironic-inspector         # ISSUE: not a product,skipped
+      - ironic-python-agent      # ISSUE: not a product,skipped
+      - ironic-ui                # ISSUE: not a product,skipped
+      - jqueryui
+      - kombu
+      - liberasurecode
+      - libjs-angular-file-upload
+      - libjs-angular-gettext
+      - libjs-angularjs-smart-table
+      - libjs-bootswatch
+      - libjs-jsencrypt
+      - libjs-term.js
+      - libvirt
+      - libvirt-python
+      - migrate
+      - mod-wsgi
+      - monasca-statsd   # ISSUE: python-designate suggest
+      - mysql-wsrep-5.6
+      - ndg-httpsclient
+      - nettle               # qemu\netropn req
+      - networking-bagpipe   # ISSUE: signatov, not a product?
+      - networking-baremetal # ISSUE: signatov, not a product?
+      - networking-midonet   # ISSUE: signatov, not a product?
+      - networking-odl       # ISSUE: signatov, not a product?
+      - networking-ovn       # ISSUE: signatov, not a product?
+      - networking-sfc       # ISSUE: signatov, not a product?
+      - neutron-dynamic-routing # ISSUE:
+      - neutron-fwaas-dashboard # ISSUE:
+      - neutron-lbaas-dashboard # ISSUE:
+      - novnc
+      - openstack-pkg-tools
+      - openvswitch             # ISSUE:
+      - oslo-sphinx
+      - pandas
+      - paramiko
+      - prometheus-bin
+      - pycodestyle
+      - pygments
+      - pyinotify
+      - pyopenssl
+      - pyparsing
+      - pyroute2
+      - pytest
+      - pytest-runner
+      - python-amqp
+      - python-babel
+      - python-bcrypt
+      - python-brick-cinderclient-ext # ISSUE
+      - python-cachetools
+      - python-castellan
+      - python-ceilometermiddleware   # ISSUE
+      - python-cffi
+      - python-cliff
+      - python-congressclient         # ISSUE not a product?
+      - python-cotyledon
+      - python-coverage
+      - python-cryptography
+      - python-cryptography-vectors
+      - python-cursive
+      - python-daiquiri               # ISSUE: gnochi req!
+      - python-deprecation
+      - python-diskimage-builder
+      - python-django
+      - python-django-babel
+      - python-django-compressor
+      - python-django-openstack-auth # ISSUE deprecated?
+      - python-dogpile.cache
+      - python-eventlet
+      - python-fastimport
+      - python-fixtures
+      - python-flake8
+      - python-gabbi
+      - python-git
+      - python-glance-store         # ISSUE wrong source name python-glance-store
+#      - python-gnocchiclient # ISSUE!
+      - python-hacking
+      - python-hypothesis
+      - python-idna
+      - python-imagesize
+      - python-ironic-inspector-client # ISSUE:
+      - python-ironic-lib              # ISSUE
+      - python-kafka
+      - python-keyring
+      - python-keystoneauth1        # ISSUE: => packaging/specs/python-keystoneauth1;   packaging/sources/keystoneauth
+      - python-keystonemiddleware   # ISSUE: => sources
+      - python-ldappool
+      - python-lz4
+      - python-magnumclient # ISSUE: not product
+      - python-mccabe
+      - python-memcache
+      - python-microversion-parse # ISSUE
+      - python-mistralclient      # ISSUE: not a product
+      - python-mock
+      - python-neutron-lib        # ISSUE
+      - python-openstackdocstheme
+      - python-openstacksdk      # ISSUE
+      - python-os-api-ref
+      - python-os-brick          # ISSUE
+      - python-os-client-config  # ISSUE
+      - python-os-testr          # ISSUE unit tests req
+      - python-os-traits         # ISSUE nova req
+      - python-os-vif            # ISSUE
+      - python-os-win
+      - python-os-xenapi
+      - python-osc-lib           # ISSUE
+      - python-oslo.cache       # ISSUE
+      - python-oslo.concurrency       # ISSUE
+      - python-oslo.config       # ISSUE
+      - python-oslo.context       # ISSUE
+      - python-oslo.db       # ISSUE
+      - python-oslo.i18n       # ISSUE
+      - python-oslo.log       # ISSUE
+      - python-oslo.messaging          # ISSUE
+      - python-oslo.middleware         # ISSUE
+      - python-oslo.policy             # ISSUE
+      - python-oslo.privsep            # ISSUE
+      - python-oslo.reports            # ISSUE
+      - python-oslo.rootwrap           # ISSUE
+      - python-oslo.serialization      # ISSUE
+      - python-oslo.service            # ISSUE
+      - python-oslo.utils              # ISSUE
+      - python-oslo.versionedobjects   # ISSUE
+      - python-oslo.vmware             # ISSUE
+      - python-oslotest                # ISSUE
+      - python-osprofiler              # ISSUE
+      - python-ovsdbapp                # ISSUE
+      - python-passlib
+      - python-pbr                     # ISSUE
+      - python-pecan
+      - python-positional
+      - python-py
+      - python-pycadf
+      - python-pyeclib
+      - python-pyghmi
+      - python-pykmip
+      - python-pyldap
+      - python-pymysql
+      - python-pypowervm
+      - python-reno
+      - python-requests-mock
+      - python-requestsexceptions
+      - python-rfc3986
+      - python-saharaclient            # ISSUE
+      - python-scipy
+      - python-scrypt
+      - python-selenium
+      - python-senlinclient         # ISSUE heat req
+      - python-statsd
+      - python-taskflow
+      - python-tenacity
+      - python-tinyrpc
+      - python-tooz                 # ISSUE
+      - python-troveclient          # ISSUE heat req
+      - python-typing
+      - python-urllib3
+      - python-weakrefmethod
+      - python-webob
+      - python-wsgi-intercept
+      - python-xstatic-angular        # ISSUE
+      - python-xstatic-angular-bootstrap         # ISSUE
+      - python-xstatic-angular-fileupload         # ISSUE
+      - python-xstatic-angular-gettext         # ISSUE
+      - python-xstatic-angular-schema-form         # ISSUE
+      - python-xstatic-bootstrap-scss         # ISSUE
+      - python-xstatic-bootswatch        # ISSUE
+      - python-xstatic-d3        # ISSUE
+      - python-xstatic-font-awesome        # ISSUE
+      - python-xstatic-jasmine        # ISSUE
+      - python-xstatic-jquery        # ISSUE
+      - python-xstatic-jquery-ui        # ISSUE
+      - python-xstatic-jsencrypt        # ISSUE
+      - python-xstatic-mdi        # ISSUE
+      - python-xstatic-objectpath        # ISSUE
+      - python-xstatic-roboto-fontface        # ISSUE
+      - python-xstatic-smart-table        # ISSUE
+      - python-xstatic-term.js        # ISSUE
+      - python-xstatic-tv4        # ISSUE
+      - python-zaqarclient        # ISSUE heat req
+      - python-zunclient        # ISSUE heat req
+      - pyyaml # ARM rebuild ;(
+      - qemu            # sys pkg
+      - rabbitmq-server # sys pkg
+      - requests
+      - requirejs
+      - routes
+      - ryu
+      - seabios         # sys pkg
+      - setuptools-scm
+      - sphinx
+      - sphinx-celery
+      - sphinxcontrib-websupport
+      - sqlalchemy
+      - sqlparse
+      - stevedore
+      - sushy
+      - td-agent-additional-plugins # ISSUE fluentd req
+      - tosca-parser                # ISSUE heat translator
+      - vine
+      - voluptuous
+      - watchdog # sys pkg
+      - websocket-client
+      - websockify
+#    project_custom_branches:
+#      openstack/fuel-nailgun-extension-converted-serializers: ["stable/mitaka"]
+#      openstack/fuel-nailgun-extension-iac: [ "stable/mitaka" ]
+#      openstack/timmy: ["stable/mitaka"]
+  specs:
+    prefixes:
+     - "packaging/specs/"
+    branches_all:
+      - "mcp/pike"

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        p {
+          color: navy;
+          text-indent: 80px;
+          text-align:  center;
+          font-size: 300%;
+          text-transform: uppercase;
+        }
+    </style>
+    <style>
+        nbr {
+          white-space:nowrap;
+          text-align:  center;
+          text-indent: 1px;
+          font-size: 50%;
+        }
+    </style>
+    <style>
+        table_td_location {
+        border: 1px solid #555;
+        border-width: 1px 1px 0 0;
+        }
+                table_th_location {
+        border: 1px solid #555;
+        border-width: 1px 1px 0 0;
+        }
+    </style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1>TTL=2min </h1>
+    <a href="https://app.slack.com/client/T03ACD12T/CLFJAGKNW" target="_blank">Go to #mcpbm-ci channel</a>
+    <title>kaas-bm IC HV status</title>
+    <script>
+        // Function to fetch server data and update the page
+        async function fetchServerData() {
+            const response = await fetch('/api/data');
+            const result = await response.json();
+            const {servers, baremetal_nodes, stacks} = result;
+
+            // Find the table element
+            const serverTable = document.getElementById('server-table-body');
+            const ironicTable = document.getElementById('ironic-table-body');
+            const stackTable = document.getElementById('stack-table-body');
+
+            // Clear any loading message
+            document.getElementById('loading').style.display = 'none';
+
+            // Populate the table with server data
+            servers.forEach(server => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td><table_td_location>${server.location}</table_td_location></td><td>${server.name}</td><td>${server.status}</td>`;
+                serverTable.appendChild(row);
+            });
+            baremetal_nodes.forEach(server => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td bgcolor="${server.color}">${server.name}</td>
+                <td bgcolor="${server.status_color}">${server.status}</td>
+                <td>${server.maintenance}</td>`;
+                ironicTable.appendChild(row);
+            });
+            stacks.forEach(server => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td bgcolor="${server.color}">
+                <a href="${server.url}" target="_blank">${server.name}</a>
+                <td><nbr>${server.status}</nbr></td>
+                <td>${server.alive_for}</td>`;
+                stackTable.appendChild(row);
+            });
+        }
+
+        // Call the function when the page loads
+        window.onload = function() {
+            fetchServerData();
+        };
+    </script>
+</head>
+<body>
+<title>EU-IC kaas-bm HV status</title>
+<!-- Loading message -->
+<p bgcolor="red" id="loading">Loading, please wait...</p>
+
+
+<h1>List of stacks</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>alive_for</th>
+    </tr>
+    </thead>
+    <tbody id="stack-table-body">
+    <!-- Server rows will be inserted here by JavaScript -->
+    </tbody>
+</table>
+
+<h1>List of servers</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>
+            <table_th_location>Location</table_th_location>
+        </th>
+        <th>Name</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody id="server-table-body">
+    <!-- Server rows will be inserted here by JavaScript -->
+    </tbody>
+</table>
+
+<h1>List of ironic Servers</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Maintenance</th>
+    </tr>
+    </thead>
+    <tbody id="ironic-table-body">
+    <!-- Server rows will be inserted here by JavaScript -->
+    </tbody>
+</table>
+</body>
+</html>
+

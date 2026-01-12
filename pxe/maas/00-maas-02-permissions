@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -x
+echo START
+sed -i 's/PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config
+sed -i 's/PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+mkdir -p ~/.ssh/
+echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGmNI+xV2sgIZX6tr5i4eQcxM4rkNoMiFbUuxtZYw5rKci9cSp9C/NC11VnJzpLG3lf11vLwTztlaM7hjdYlKoynpfDhfRhg1p5w/Pd/uoh6bO7KP/r2QuSpVsc6NGAHD2f0qxmrFX81xMG6zq0MCHXc+BGMZTKWAW7dMGsjJUnIa/wv24J25DOILoEBhclGQHx5r7R5ysqSOTdBEgN304KL8XPP+bAwDFTNJIwtfBdNt8jSv6yR2CyfB7t8pqXf93DvwaGBJfuu1r4gljj5ozCyvGExEtRTzvAC+oLq2NIfDOCC3iRWXrls3iDLZYxwm7VLcQSre4Yp6jfp+WuRI7 alexz' >> /root/.ssh/authorized_keys
+service ssh restart;
+echo -e "r00tme\nr00tme"|passwd root
+echo -e "ubuntu\nubuntu"|passwd ubuntu
+echo DONE

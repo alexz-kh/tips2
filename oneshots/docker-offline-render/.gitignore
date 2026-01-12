@@ -1,0 +1,6 @@
+scripts/
+packer-templates/
+mcp-common-scripts
+mcp-offline-model/
+packer-templates/
+salt-formulas-scripts/

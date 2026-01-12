@@ -1,0 +1,50 @@
+---
+  root_ssh_authorized_file: /root/.ssh/id_rsa.pub
+  extend_kopts: "biosdevname=0 net.ifnames=1 debug ignore_loglevel log_buf_len=10M print_fatal_signals=1 LOGLEVEL=8"
+  ubuntu_release: xenial
+  extra_dirs:
+    - /usr/share/fuel_bootstrap_cli/files/xenial
+  output_dir: /root/
+  kernel_flavor: linux-image-generic-lts-xenial
+  packages:
+    - hwloc
+    - linux-firmware
+    - live-boot
+    - live-boot-initramfs-tools
+    - mc
+    - msmtp-mta
+    - tcpdump
+    - openssh-client
+    - openssh-server
+    - squashfs-tools
+    - ubuntu-minimal
+    - vim
+    - wget
+    - xz-utils
+    - strace
+    - iotop
+    - htop
+    - iftop
+    - lvm2
+    - parted
+    - gdisk
+    - util-linux
+    - dmidecode
+  bootstrap_images_dir: /var/www/nailgun/bootstraps
+  active_bootstrap_symlink: /var/www/nailgun/bootstraps/active_bootstrap
+  flavor: ubuntu
+  http_proxy: ""
+  https_proxy: ""
+  repos: 
+    - name: ubuntu-0
+      priority: 1001
+      section: "main universe multiverse restricted"
+      suite: xenial
+      type: deb
+      uri: "http://cz.archive.ubuntu.com/ubuntu/"
+    - name: ubuntu-1
+      priority: 1001
+      section: "main universe multiverse restricted"
+      suite: xenial-updates
+      type: deb
+      uri: "http://cz.archive.ubuntu.com/ubuntu/"
